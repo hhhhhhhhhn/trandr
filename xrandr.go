@@ -34,6 +34,7 @@ func GetDisplays() (diplays []Display) {
 
 	for _, line := range strings.Split(string(out[:len(out) - 1]), "\n") {
 		diplays = append(diplays, ParseDisplay(line))
+		fmt.Println(line, ParseDisplay(line))
 	}
 	return diplays
 }
@@ -126,6 +127,10 @@ func Copy(displays []Display) []Display {
 func ParseChanges(displays []Display, command string) {
 	out, _ := exec.Command("sh", "-c", command + " --dryrun | grep '\"'").Output()
 
+	if len(out) == 0 {
+		return
+	}
+
 	for _, line := range strings.Split(string(out[:len(out) - 1]), "\n") {
 		ParseChange(displays, line)
 	}
@@ -138,6 +143,7 @@ func ParseChange(displays []Display, line string) {
 
 	for i := range displays {
 		if displays[i].Name == name {
+			displays[i].Off = false
 			displays[i].ParseMode(modeString)
 		}
 	}
@@ -153,13 +159,12 @@ func GetDisplayModes(displayName string) []string {
 	)
 	out, _ := exec.Command("sh", "-c", command).Output()
 
-	return strings.Split(string(out), "\n")
+	return strings.Split(string(out[:len(out)-1]), "\n")
 }
 
 
 //func main() {
-//	// TODO: TUI
-//	d := GetDisplays()
+//	// TODO: TUI d := GetDisplays()
 //
 //	c := Copy(d)
 //
