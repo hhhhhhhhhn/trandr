@@ -34,7 +34,6 @@ func GetDisplays() (diplays []Display) {
 
 	for _, line := range strings.Split(string(out[:len(out) - 1]), "\n") {
 		diplays = append(diplays, ParseDisplay(line))
-		fmt.Println(line, ParseDisplay(line))
 	}
 	return diplays
 }
